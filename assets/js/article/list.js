@@ -75,30 +75,42 @@ $(function() {
 
     //4.给分页器按钮添加绑定事件，由于分页器是页面后添加上的，于是使用事件委托
     $(document).on('click', '.del-btn', function() {
-        let id = $(this).data('id')
-        layer.confirm('确认是否删除', {
-            title: '提示',
-            btn: ['是', '否'] //可以无限个按钮
+            let id = $(this).data('id')
+            layer.confirm('确认是否删除', {
+                title: '提示',
+                btn: ['是', '否'] //可以无限个按钮
 
-        }, function(index, layero) {
-            axios.get(`/my/article/delete/${id}`).then(res => {
-                console.log(id);
-                if (res.status !== 0) {
-                    return layer.msg('删除文章失败')
-                }
-                layer.msg('删除文章成功')
-                if ($('.del-btn').length == 1 && query.pagenum !== 1) {
-                    query.pagenum = query.pagenum - 1
-                }
+            }, function(index, layero) {
+                axios.get(`/my/article/delete/${id}`).then(res => {
+                    console.log(id);
+                    if (res.status !== 0) {
+                        return layer.msg('删除文章失败')
+                    }
+                    layer.msg('删除文章成功')
+                    if ($('.del-btn').length == 1 && query.pagenum !== 1) {
+                        query.pagenum = query.pagenum - 1
+                    }
 
 
-                getTableList()
+                    getTableList()
+                    layer.close(index)
+                })
+            }, function(index) {
                 layer.close(index)
-            })
-        }, function(index) {
-            layer.close(index)
-            getTableList()
-        });
+                getTableList()
+            });
+        })
+        //5.给编辑按钮绑定事件，也是事件委托
+    $(document).on('click', '.edit-btn', function() {
+
+        //5.1获取被点击那一条的id
+        const id = $(this).data('id')
+
+        //5.2点击编辑按钮后跳转，并把获取的id值放在url的查询参数内
+        location.href = `./edit.html?id=${id}`
+        window.parent.$('#edit-list').click()
+
     })
+
 
 })
